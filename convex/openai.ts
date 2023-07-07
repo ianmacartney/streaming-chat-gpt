@@ -29,17 +29,22 @@ export const chat = internalAction({
       ],
     });
     let body = "";
+    let done = false;
     for await (const part of stream) {
       if (part.choices[0].delta?.content) {
         body += part.choices[0].delta.content;
-      } else if (part.choices[0].finish_reason === "length") {
-        body += "...[truncated]";
+      } else if (part.choices[0].finish_reason) {
+        done = true;
+        if (part.choices[0].finish_reason === "length") {
+          body += "...[truncated]";
+        }
       } else {
         continue;
       }
       await runMutation(internal.messages.update, {
         messageId,
         body,
+        done,
       });
     }
   },

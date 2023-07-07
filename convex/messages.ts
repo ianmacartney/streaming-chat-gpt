@@ -26,6 +26,7 @@ export const send = mutation({
       const messageId = await db.insert("messages", {
         author: "ChatGPT",
         body: "...",
+        done: false,
       });
       // Schedule an action that calls ChatGPT and updates the message.
       scheduler.runAfter(0, internal.openai.chat, { messages, messageId });
@@ -35,8 +36,8 @@ export const send = mutation({
 
 // Updates a message with a new body.
 export const update = internalMutation({
-  args: { messageId: v.id("messages"), body: v.string() },
-  handler: async ({ db }, { messageId, body }) => {
-    await db.patch(messageId, { body });
+  args: { messageId: v.id("messages"), body: v.string(), done: v.boolean() },
+  handler: async ({ db }, { messageId, body, done }) => {
+    await db.patch(messageId, { body, done });
   },
 });
