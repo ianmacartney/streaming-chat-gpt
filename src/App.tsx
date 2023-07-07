@@ -23,11 +23,11 @@ export default function App() {
       <header>
         <h1>Acme Chat</h1>
         <p>
-          Connected as{" "}
-          <input
+          Connected as <strong>Ian</strong>
+          {/* <input
             value={name}
             onChange={(event) => setName(event.target.value)}
-          />
+          /> */}
         </p>
       </header>
       {messages.map((message) => (
