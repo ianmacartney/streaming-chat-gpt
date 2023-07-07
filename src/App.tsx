@@ -24,10 +24,6 @@ export default function App() {
         <h1>Acme Chat</h1>
         <p>
           Connected as <strong>{name}</strong>
-          {/* <input
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          /> */}
         </p>
       </header>
       {messages.map((message) => (
