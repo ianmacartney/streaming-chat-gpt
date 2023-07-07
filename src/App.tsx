@@ -9,7 +9,7 @@ export default function App() {
   const [newMessageText, setNewMessageText] = useState("");
   const sendMessage = useMutation(api.messages.send);
 
-  const [name, setName] = useState(() => faker.person.firstName());
+  const [name] = useState(() => faker.person.firstName());
   async function handleSendMessage(event: FormEvent) {
     event.preventDefault();
     await sendMessage({ body: newMessageText, author: name });
