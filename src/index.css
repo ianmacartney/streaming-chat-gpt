@@ -235,6 +235,7 @@ body {
 }
 
 .chat input {
+  color: #111827;
   width: 100%;
   border: 0;
   background: transparent;
@@ -244,6 +245,20 @@ body {
   font-family: inherit;
   border: 3px solid transparent;
   border-radius: 16px;
+}
+
+.chat input::placeholder {
+  color: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+  .chat input {
+    color: white;
+  }
+
+  .chat input::placeholder {
+    color: #9ca3af;
+  }
 }
 
 .chat input:focus {
