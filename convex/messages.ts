@@ -17,9 +17,13 @@ export const send = mutation({
     await db.insert("messages", { body, author });
 
     if (body.indexOf("@gpt") !== -1) {
-      // Fetch the latest 10 messages to send as context.
+      // Fetch the latest 20 messages to send as context.
       // The default order is by creation time.
-      const messages = await db.query("messages").order("desc").take(10);
+      const messages = await db
+        .query("messages")
+        .order("desc")
+        .filter((q) => q.neq(q.field("done"), false))
+        .take(20);
       // Reverse the list so that it's in chronological order.
       messages.reverse();
       // Insert a message with a placeholder body.
