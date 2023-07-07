@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { faker } from "@faker-js/faker";
 
 export default function App() {
   const messages = useQuery(api.messages.list) || [];
@@ -8,9 +9,7 @@ export default function App() {
   const [newMessageText, setNewMessageText] = useState("");
   const sendMessage = useMutation(api.messages.send);
 
-  const [name, setName] = useState(
-    () => "User " + Math.floor(Math.random() * 10000)
-  );
+  const [name, setName] = useState(() => faker.person.firstName());
   async function handleSendMessage(event: FormEvent) {
     event.preventDefault();
     await sendMessage({ body: newMessageText, author: name });

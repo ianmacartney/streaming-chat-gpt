@@ -3,13 +3,13 @@
 }
 
 :root {
-  --primary: #7c3aed;
+  --primary: #F35D1C;
   --primary-text: #111827;
   --secondary-text: #374151;
   --tertiary-text: #4b5563;
   --secondary-background: #f3f4f6;
   --bubbles-background: white;
-  --bubbles-mine-background: #6d28d9;
+  --bubbles-mine-background: #F35D1C;
   --focus-ring: #3b82f680;
 
   color-scheme: light dark;
@@ -17,13 +17,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --primary: #6d28d9;
+    --primary: #F35D1C;
     --primary-text: #f9fafb;
     --secondary-text: #f3f4f6;
     --tertiary-text: #e5e7eb;
     --secondary-background: #0f172a;
     --bubbles-background: #374151;
-    --bubbles-mine-background: #5b21b6;
+    --bubbles-mine-background: #F35D1C;
   }
 }
 
@@ -132,6 +132,9 @@ body {
   }
 }
 
+.chat header p strong {
+  font-weight: 500;
+}
 .chat header p input {
   font-weight: 500;
   margin: 0;
