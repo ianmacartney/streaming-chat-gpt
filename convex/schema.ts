@@ -5,6 +5,5 @@ export default defineSchema({
   messages: defineTable({
     author: v.string(),
     body: v.string(),
-    done: v.optional(v.boolean()),
   }),
 });
