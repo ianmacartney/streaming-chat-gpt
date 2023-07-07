@@ -4,7 +4,7 @@ import { api } from "../convex/_generated/api";
 import { faker } from "@faker-js/faker";
 
 export default function App() {
-  const messages = useQuery(api.messages.list) || [];
+  const messages = useQuery(api.messages.list);
 
   const [newMessageText, setNewMessageText] = useState("");
   const sendMessage = useMutation(api.messages.send);
@@ -26,7 +26,7 @@ export default function App() {
           Connected as <strong>{name}</strong>
         </p>
       </header>
-      {messages.map((message) => (
+      {messages?.map((message) => (
         <article
           key={message._id}
           className={message.author === name ? "message-mine" : ""}

@@ -6,7 +6,10 @@ import { v } from "convex/values";
 
 export const list = query({
   handler: async ({ db }): Promise<Doc<"messages">[]> => {
-    return await db.query("messages").collect();
+    // Grab the most recent messages.
+    const messages = await db.query("messages").order("desc").take(100);
+    // Reverse the list so that it's in chronological order.
+    return messages.reverse();
   },
 });
 
@@ -17,7 +20,7 @@ export const send = mutation({
     await db.insert("messages", { body, author });
 
     if (body.indexOf("@gpt") !== -1) {
-      // Fetch the latest 10 messages to send as context.
+      // Fetch the latest n messages to send as context.
       // The default order is by creation time.
       const messages = await db.query("messages").order("desc").take(10);
       // Reverse the list so that it's in chronological order.
