@@ -5,19 +5,14 @@ import { faker } from "@faker-js/faker";
 
 export default function App() {
   const messages = useQuery(api.messages.list);
-
-  const [newMessageText, setNewMessageText] = useState("");
   const sendMessage = useMutation(api.messages.send);
+  const [newMessageText, setNewMessageText] = useState("");
+  const { name } = useAuth();
 
-  const [name] = useState(() => faker.person.firstName());
-  async function handleSendMessage(event: FormEvent) {
-    event.preventDefault();
-    await sendMessage({ body: newMessageText, author: name });
-    setNewMessageText("");
-  }
   useEffect(() => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   }, [messages]);
+
   return (
     <main className="chat">
       <header>
@@ -35,10 +30,16 @@ export default function App() {
           <p>{message.body}</p>
         </article>
       ))}
-      <form onSubmit={handleSendMessage}>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          await sendMessage({ body: newMessageText, author: name });
+          setNewMessageText("");
+        }}
+      >
         <input
           value={newMessageText}
-          onChange={(event) => setNewMessageText(event.target.value)}
+          onChange={(e) => setNewMessageText(e.target.value)}
           placeholder="Write a message…"
         />
         <button type="submit" disabled={!newMessageText}>
@@ -48,3 +49,11 @@ export default function App() {
     </main>
   );
 }
+
+const useAuth = () => {
+  // Use an auth provider, session-based auth, or allow a user to set a name.
+  const [name, setName] = useState(() => faker.person.firstName());
+  // @ts-ignore - expose a way to set the name from the console.
+  if (window) window.setName = setName;
+  return { name };
+};
