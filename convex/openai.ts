@@ -8,30 +8,24 @@ type ChatParams = {
   messages: Doc<"messages">[];
   messageId: Id<"messages">;
 };
-export const chat = internalAction(
-  async ({ runMutation }, { messages, messageId }: ChatParams) => {
+export const chat = internalAction({
+  handler: async ({ runMutation }, { messages, messageId }: ChatParams) => {
     const apiKey = process.env.OPENAI_API_KEY!;
     const openai = new OpenAI({ apiKey });
 
     const stream = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-3.5-turbo", // "gpt-4" also works, but is so slow!
       stream: true,
       messages: [
         {
-          role: "system" as const,
+          role: "system",
           content: "You are a terse bot in a group chat responding to q's.",
         },
-        ...messages.map(({ body, author }) =>
-          author === "ChatGPT"
-            ? {
-                role: "assistant" as const,
-                content: body,
-              }
-            : {
-                role: "user" as const,
-                content: author + ": " + body,
-              }
-        ),
+        ...messages.map(({ body, author }) => ({
+          role:
+            author === "ChatGPT" ? ("assistant" as const) : ("user" as const),
+          content: body,
+        })),
       ],
     });
     let body = "";
@@ -48,5 +42,5 @@ export const chat = internalAction(
         body,
       });
     }
-  }
-);
+  },
+});
