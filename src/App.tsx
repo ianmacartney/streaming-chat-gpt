@@ -23,7 +23,7 @@ export default function App() {
       <header>
         <h1>Acme Chat</h1>
         <p>
-          Connected as <strong>Ian</strong>
+          Connected as <strong>{name}</strong>
           {/* <input
             value={name}
             onChange={(event) => setName(event.target.value)}
