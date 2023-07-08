@@ -34,11 +34,12 @@ export const chat = internalAction({
         body += part.choices[0].delta.content;
       } else if (part.choices[0].finish_reason === "length") {
         body += "...[truncated]";
+      } else {
+        continue;
       }
       await runMutation(internal.messages.update, {
         messageId,
         body,
-        done: !!part.choices[0].finish_reason,
       });
     }
   },
