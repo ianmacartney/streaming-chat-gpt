@@ -13,11 +13,25 @@ const seedMessages = [
 ] as const;
 
 export const seed = internalMutation({
-  handler: async ({ db, scheduler }) => {
+  handler: async ({ scheduler }) => {
+    if (!process.env.OPENAI_API_KEY) {
+      console.error(
+        "Missing OPENAI_API_KEY env variable, set it in the dashboard: https://dashboard.convex.dev"
+      );
+      return;
+    }
     let totalDelay = 0;
     for (const [author, body, delay] of seedMessages) {
       totalDelay += delay;
       await scheduler.runAfter(totalDelay, api.messages.send, { author, body });
     }
+  },
+});
+
+export default internalMutation({
+  handler: async (ctx) => {
+    const anyMessage = await ctx.db.query("messages").first();
+    if (anyMessage) return;
+    await seed(ctx, {});
   },
 });
