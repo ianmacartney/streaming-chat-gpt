@@ -3,11 +3,14 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { faker } from "@faker-js/faker";
 
+// For demo purposes. In a real app, you'd have real user data.
+const NAME = faker.person.firstName();
+
 export default function App() {
   const messages = useQuery(api.messages.list);
   const sendMessage = useMutation(api.messages.send);
   const [newMessageText, setNewMessageText] = useState("");
-  const { name } = useAuth();
+  const { name: NAME } = useName();
 
   useEffect(() => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -18,13 +21,13 @@ export default function App() {
       <header>
         <h1>Acme Chat</h1>
         <p>
-          Connected as <strong>{name}</strong>
+          Connected as <strong>{NAME}</strong>
         </p>
       </header>
       {messages?.map((message) => (
         <article
           key={message._id}
-          className={message.author === name ? "message-mine" : ""}
+          className={message.author === NAME ? "message-mine" : ""}
         >
           <div>{message.author}</div>
           <p>{message.body}</p>
@@ -33,7 +36,7 @@ export default function App() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          await sendMessage({ body: newMessageText, author: name });
+          await sendMessage({ body: newMessageText, author: NAME });
           setNewMessageText("");
         }}
       >
@@ -50,7 +53,7 @@ export default function App() {
   );
 }
 
-const useAuth = () => {
+const useName = () => {
   // Use an auth provider, session-based auth, or allow a user to set a name.
   const [name, setName] = useState(() => faker.person.firstName());
   // @ts-ignore - expose a way to set the name from the console.
