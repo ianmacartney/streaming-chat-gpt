@@ -32,15 +32,13 @@ export const chat = internalAction({
     for await (const part of stream) {
       if (part.choices[0].delta?.content) {
         body += part.choices[0].delta.content;
-      } else if (part.choices[0].finish_reason === "length") {
-        body += "...[truncated]";
-      } else {
-        continue;
+        // Alternatively you could wait for complete words / sentences.
+        // Here we send an update on every stream message.
+        await runMutation(internal.messages.update, {
+          messageId,
+          body,
+        });
       }
-      await runMutation(internal.messages.update, {
-        messageId,
-        body,
-      });
     }
   },
 });
