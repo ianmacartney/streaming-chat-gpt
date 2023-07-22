@@ -13,7 +13,7 @@ const seedMessages = [
 ] as const;
 
 export const seed = internalMutation({
-  handler: async ({ scheduler }) => {
+  handler: async (ctx) => {
     if (!process.env.OPENAI_API_KEY) {
       console.error(
         "Missing OPENAI_API_KEY env variable, set it in the dashboard: https://dashboard.convex.dev"
@@ -23,7 +23,10 @@ export const seed = internalMutation({
     let totalDelay = 0;
     for (const [author, body, delay] of seedMessages) {
       totalDelay += delay;
-      await scheduler.runAfter(totalDelay, api.messages.send, { author, body });
+      await ctx.scheduler.runAfter(totalDelay, api.messages.send, {
+        author,
+        body,
+      });
     }
   },
 });
