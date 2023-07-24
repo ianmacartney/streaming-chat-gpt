@@ -9,7 +9,7 @@ type ChatParams = {
   messageId: Id<"messages">;
 };
 export const chat = internalAction({
-  handler: async ({ runMutation }, { messages, messageId }: ChatParams) => {
+  handler: async (ctx, { messages, messageId }: ChatParams) => {
     const apiKey = process.env.OPENAI_API_KEY!;
     const openai = new OpenAI({ apiKey });
 
@@ -28,13 +28,19 @@ export const chat = internalAction({
         })),
       ],
     });
+    if (!stream.response.ok) {
+      await ctx.runMutation(internal.messages.update, {
+        messageId,
+        body: "OpenAI call failed: " + stream.response.statusText,
+      });
+    }
     let body = "";
     for await (const part of stream) {
       if (part.choices[0].delta?.content) {
         body += part.choices[0].delta.content;
         // Alternatively you could wait for complete words / sentences.
         // Here we send an update on every stream message.
-        await runMutation(internal.messages.update, {
+        await ctx.runMutation(internal.messages.update, {
           messageId,
           body,
         });

@@ -15,10 +15,11 @@ const seedMessages = [
 export const seed = internalMutation({
   handler: async (ctx) => {
     if (!process.env.OPENAI_API_KEY) {
-      console.error(
-        "Missing OPENAI_API_KEY env variable, set it in the dashboard: https://dashboard.convex.dev"
+      throw new Error(
+        "Missing OPENAI_API_KEY in environment variables.\n" +
+          "Set it in the project settings in the Convex dashboard:\n" +
+          "    npx convex dashboard\n or https://dashboard.convex.dev"
       );
-      return;
     }
     let totalDelay = 0;
     for (const [author, body, delay] of seedMessages) {

@@ -24,34 +24,27 @@ and stream the response, updating the message as data comes back from OpenAI.
 
 ## Running the App
 
-1. Install dependencies
+```
+npm install
+npm run dev
+```
 
-   ```
-   npm install && npx convex dev --once
-   ```
+This will configure a Convex project if you don't already have one.
+It requires an [OpenAI](https://platform.openai.com/) API key.
+Set the environment variable: `OPEN_API_KEY` (should start with `sk-`)
+in your Convex backend via the [dashboard](https://dashboard.convex.dev)
+once your backend has been configured. You can also get there via:
+```
+npx convex dashboard
+```
 
-2. Get an [OpenAI](https://platform.openai.com/) API key.
-3. Set the environment variable: `OPEN_API_KEY` (should start with `sk-`)
-   in your Convex backend via the dashboard (`npx convex dashboard`).
+Once `npm run dev` successfully syncs, if the database is empty,
+it will schedule some messages to be sent so you can see it working in action.
 
-   ```
-   npx convex dashboard
-   ```
+It will then start two processes in one terminal: `vite` for the frontend,
+and `npx convex dev` for syncing changes to Convex server functions.
 
-4. Start the frontend and backend
-
-   ```
-   npm run dev
-   ```
-
-This will start two processes in one terminal: `vite` for the frontend, and
-`npx convex dev` for syncing changes to Convex server functions.
-
-Before running these commands, it will do a one-time sync of convex functions,
-and (if the database is empty) schedule some messages to be sent so you can see
-it working in action (`convex run init`).
-
-You can look at how this is configured in the `scripts` section of [package.json](./package.json).
+Check it out in the `scripts` section of [package.json](./package.json).
 
 # What is Convex?
 
