@@ -1,4 +1,3 @@
-"use node";
 import { OpenAI } from "openai";
 import { internalAction } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
