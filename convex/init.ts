@@ -12,15 +12,20 @@ const seedMessages = [
   ["Ian", "Thanks @gpt!", 5000],
 ] as const;
 
+if (!process.env.OPENAI_API_KEY) {
+  const deploymentName = process.env.CONVEX_CLOUD_URL?.slice(8).replace(
+    ".convex.cloud",
+    ""
+  );
+  throw new Error(
+    "\n  Missing OPENAI_API_KEY in environment variables.\n\n" +
+      "  Get one at https://openai.com/ and paste it on the Convex dashboard:\n" +
+      `  https://dashboard.convex.dev/d/${deploymentName}/settings?var=OPENAI_API_KEY`
+  );
+}
+
 export const seed = internalMutation({
   handler: async (ctx) => {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error(
-        "Missing OPENAI_API_KEY in environment variables.\n" +
-          "Set it in the project settings in the Convex dashboard:\n" +
-          "    npx convex dashboard\n or https://dashboard.convex.dev"
-      );
-    }
     let totalDelay = 0;
     for (const [author, body, delay] of seedMessages) {
       totalDelay += delay;
