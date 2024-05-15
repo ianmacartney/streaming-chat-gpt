@@ -19,13 +19,15 @@ export default function App() {
 
   useEffect(() => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  }, [messages, streamedMessage]);
+  useEffect(() => {
     const message = messages.find((m) => m._id === streamedMessageId);
     if (message !== undefined && message.isComplete) {
       // Clear what we streamed in favor of the complete message
       setStreamedMessageId(null);
       setStreamedMessage("");
     }
-  }, [messages, streamedMessage, setStreamedMessage, setStreamedMessageId]);
+  }, [messages, setStreamedMessage, setStreamedMessageId]);
 
   return (
     <main className="chat">

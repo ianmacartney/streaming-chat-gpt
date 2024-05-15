@@ -1,9 +1,15 @@
 # Streaming Chat Completions
 
-An example of streaming ChatGPT via the OpenAI v4.0 node SDK.
-See [this Stack post](https://stack.convex.dev/gpt-streaming-with-persistent-reactivity) for more information.
+An example of streaming ChatGPT via the OpenAI v4.0 node SDK built off of [this repo](https://github.com/ianmacartney/streaming-chat-gpt)
+with [this accompanying Stack post](https://stack.convex.dev/gpt-streaming-with-persistent-reactivity).
 
-![Diagram of browsers talking to Convex, which talks to OpenAI](https://cdn.sanity.io/images/ts10onj4/production/9a7b8865f6cd1cb6748fdb88c986d6ec7bd26bdb-1200x638.png "Data flow overview")
+However this app uses an [HTTP endpoint](https://docs.convex.dev/functions/http-actions) with response streaming to send the ChatGPT response to the message author without having to update the database on every streamed part.
+
+The result is that the author of a message sees frequent updates to their message, while any other viewers receive batched updates, and the app overall requires less database bandwidth.
+
+![Diagram of browsers talking to Convex, which talks to OpenAI](/overview.png "Data flow overview")
+
+![Demo of message streaming from OpenAI with two different users](/gpt_stream.gif "Demo of message streamin")
 
 ## Overview:
 
@@ -17,8 +23,8 @@ and stream the response, updating the message as data comes back from OpenAI.
 - The frontend logic is all in [`App.tsx`](./src/App.tsx).
 - The server logic that stores and updates messages in the database
   is in [`messages.ts`](./convex/messages.ts).
-- The asynchronous server function that makes the streaming request to OpenAI
-  is in [`openai.ts`](./convex/openai.ts).
+- The HTTP endpoint that makes the streaming request to OpenAI
+  is in [`http.ts`](./convex/http.ts).
 - The initial messages that are scheduled to be sent are in
   [`init.ts`](./convex/init.ts).
 
@@ -34,6 +40,7 @@ It requires an [OpenAI](https://platform.openai.com/) API key.
 Set the environment variable: `OPEN_API_KEY` (should start with `sk-`)
 in your Convex backend via the [dashboard](https://dashboard.convex.dev)
 once your backend has been configured. You can also get there via:
+
 ```
 npx convex dashboard
 ```
