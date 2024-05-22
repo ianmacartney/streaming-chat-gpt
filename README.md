@@ -3,6 +3,9 @@
 An example of streaming ChatGPT via the OpenAI v4.0 node SDK.
 See [this Stack post](https://stack.convex.dev/gpt-streaming-with-persistent-reactivity) for more information.
 
+To see a version that does the streaming over HTTP and only writes to the database
+at the end, see the `http-streaming` branch, or [this repo](https://github.com/sshader/streaming-chat-gpt/tree/sshader-streaming).
+
 ![Diagram of browsers talking to Convex, which talks to OpenAI](https://cdn.sanity.io/images/ts10onj4/production/9a7b8865f6cd1cb6748fdb88c986d6ec7bd26bdb-1200x638.png "Data flow overview")
 
 ## Overview:
@@ -34,6 +37,7 @@ It requires an [OpenAI](https://platform.openai.com/) API key.
 Set the environment variable: `OPEN_API_KEY` (should start with `sk-`)
 in your Convex backend via the [dashboard](https://dashboard.convex.dev)
 once your backend has been configured. You can also get there via:
+
 ```
 npx convex dashboard
 ```
