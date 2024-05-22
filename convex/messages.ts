@@ -1,5 +1,5 @@
 import { internal } from "./_generated/api";
-import { internalMutation, mutation } from "./_generated/server";
+import { internalMutation, internalQuery, mutation } from "./_generated/server";
 import { query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
@@ -17,7 +17,7 @@ export const send = mutation({
   args: { body: v.string(), author: v.string() },
   handler: async (ctx, { body, author }) => {
     // Send our message.
-    await ctx.db.insert("messages", { body, author });
+    await ctx.db.insert("messages", { body, author, isComplete: true });
 
     if (body.indexOf("@gpt") !== -1) {
       // Fetch the latest n messages to send as context.
@@ -29,17 +29,23 @@ export const send = mutation({
       const messageId = await ctx.db.insert("messages", {
         author: "ChatGPT",
         body: "...",
+        isComplete: false,
       });
       // Schedule an action that calls ChatGPT and updates the message.
-      ctx.scheduler.runAfter(0, internal.openai.chat, { messages, messageId });
+      return { messages, messageId };
     }
+    return null;
   },
 });
 
 // Updates a message with a new body.
 export const update = internalMutation({
-  args: { messageId: v.id("messages"), body: v.string() },
-  handler: async (ctx, { messageId, body }) => {
-    await ctx.db.patch(messageId, { body });
+  args: {
+    messageId: v.id("messages"),
+    body: v.string(),
+    isComplete: v.boolean(),
+  },
+  handler: async (ctx, { messageId, body, isComplete }) => {
+    await ctx.db.patch(messageId, { body, isComplete });
   },
 });
