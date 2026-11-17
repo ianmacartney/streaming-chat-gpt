@@ -1,5 +1,5 @@
 import { api } from "./_generated/api";
-import { internalMutation } from "./_generated/server";
+import { MutationCtx, internalMutation } from "./_generated/server";
 
 const seedMessages = [
   ["Ian", "Hey, glad you're here.", 0],
@@ -24,23 +24,27 @@ if (!process.env.OPENAI_API_KEY) {
   );
 }
 
+// A plain helper, because Convex no longer lets one registered function call
+// another directly (the default export below used to call `seed(ctx, {})`).
+async function scheduleSeedMessages(ctx: MutationCtx) {
+  let totalDelay = 0;
+  for (const [author, body, delay] of seedMessages) {
+    totalDelay += delay;
+    await ctx.scheduler.runAfter(totalDelay, api.messages.send, {
+      author,
+      body,
+    });
+  }
+}
+
 export const seed = internalMutation({
-  handler: async (ctx) => {
-    let totalDelay = 0;
-    for (const [author, body, delay] of seedMessages) {
-      totalDelay += delay;
-      await ctx.scheduler.runAfter(totalDelay, api.messages.send, {
-        author,
-        body,
-      });
-    }
-  },
+  handler: scheduleSeedMessages,
 });
 
 export default internalMutation({
   handler: async (ctx) => {
     const anyMessage = await ctx.db.query("messages").first();
     if (anyMessage) return;
-    await seed(ctx, {});
+    await scheduleSeedMessages(ctx);
   },
 });
